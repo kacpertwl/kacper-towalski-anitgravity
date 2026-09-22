@@ -1,0 +1,39 @@
+[
+  {
+    "id": "quiz-startowy-1",
+    "title": "Quiz wiedzy ogólnej — wersja startowa",
+    "createdAt": "2026-09-22T13:15:00.000Z",
+    "questions": [
+      {
+        "id": "q-1",
+        "question": "Jaka jest stolica Polski?",
+        "answers": [
+          "Kraków",
+          "Warszawa",
+          "Gdańsk"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "id": "q-2",
+        "question": "Ile planet liczy Układ Słoneczny?",
+        "answers": [
+          "7 planet",
+          "8 planet",
+          "9 planet"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "id": "q-3",
+        "question": "Który pierwiastek chemiczny ma symbol „O”?",
+        "answers": [
+          "Złoto",
+          "Ołów",
+          "Tlen"
+        ],
+        "correctAnswer": 2
+      }
+    ]
+  }
+]

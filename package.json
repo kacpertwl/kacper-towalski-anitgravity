@@ -1,0 +1,19 @@
+{
+  "name": "quiz-desktop-app",
+  "version": "1.0.0",
+  "description": "Desktopowa aplikacja quizowa",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "quiz",
+    "electron",
+    "desktop"
+  ],
+  "author": "Kacper",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.0"
+  }
+}

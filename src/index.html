@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizApp Desktop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Górny pasek aplikacji -->
+    <header class="top-navbar">
+      <div class="nav-brand" id="brand-home" title="Przejdź do ekranu głównego">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">QuizApp Desktop</span>
+          <span class="brand-subtitle">Lokalne quizy i powtórki wiedzy</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button id="btn-header-instruction" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          <span>Instrukcja</span>
+        </button>
+
+        <button id="btn-header-new-quiz" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Nowy quiz</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Główny kontener widoków -->
+    <main class="main-content">
+
+      <!-- WIDOK 1: LISTA QUIZÓW (EKRAN GŁÓWNY) -->
+      <section id="view-quizzes-list" class="view active">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Twoje Quizy</h1>
+            <p class="view-desc">Wybierz quiz do rozwiązania, dodaj nowe pytania lub stwórz własny zestaw.</p>
+          </div>
+          <div class="quizzes-counter-badge" id="quizzes-counter">
+            Liczba quizów: 0
+          </div>
+        </div>
+
+        <!-- Stan pusty (brak quizów) -->
+        <div id="quizzes-empty-state" class="empty-state hidden">
+          <div class="empty-icon">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <h3>Brak dostępnych quizów</h3>
+          <p>Nie masz jeszcze żadnych utworzonych quizów. Rozpocznij od stworzenia pierwszego zestawu pytań!</p>
+          <button class="btn btn-primary btn-lg" id="btn-empty-new-quiz">
+            + Stwórz swój pierwszy quiz
+          </button>
+        </div>
+
+        <!-- Siatka kart quizów -->
+        <div id="quizzes-grid" class="quizzes-grid"></div>
+      </section>
+
+      <!-- WIDOK 2: EDYTOR QUIZU I PYTAŃ -->
+      <section id="view-quiz-editor" class="view hidden">
+        <div class="editor-nav-bar">
+          <button id="btn-editor-back" class="btn btn-ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Wróć do listy quizów</span>
+          </button>
+          <div class="editor-actions">
+            <button id="btn-editor-save-all" class="btn btn-success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              <span>Zapisz quiz</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-card">
+          <h2 class="editor-section-title">Ustawienia quizu</h2>
+          <div class="form-group">
+            <label for="editor-quiz-title" class="form-label">Nazwa quizu:</label>
+            <input type="text" id="editor-quiz-title" class="form-control" placeholder="np. Quiz z angielskiego — unit 3" maxlength="120">
+            <span class="form-hint">Nadaj quizowi przejrzystą i jednoznaczną nazwę.</span>
+          </div>
+        </div>
+
+        <div class="editor-card questions-editor-card">
+          <div class="questions-header">
+            <div>
+              <h2 class="editor-section-title">Lista pytań</h2>
+              <span id="editor-questions-badge" class="badge">0 pytań</span>
+            </div>
+            <button id="btn-add-question" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Dodaj pytanie</span>
+            </button>
+          </div>
+
+          <div id="editor-questions-list" class="questions-list">
+            <!-- Pytania będą renderowane dynamicznie -->
+          </div>
+
+          <div id="editor-questions-empty" class="questions-empty-hint hidden">
+            <p>Ten quiz nie zawiera jeszcze żadnych pytań. Kliknij przycisk <strong>„Dodaj pytanie”</strong> powyżej, aby utworzyć pierwsze pytanie z 3 odpowiedziami.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIDOK 3: ROZWIĄZYWANIE QUIZU (TRYB ROZWIĄZYWANIA) -->
+      <section id="view-quiz-player" class="view hidden">
+        <div class="player-top-bar">
+          <div class="player-quiz-info">
+            <span class="player-quiz-badge">Rozwiązywanie quizu</span>
+            <h2 id="player-quiz-title" class="player-quiz-name">Nazwa quizu</h2>
+          </div>
+          <button id="btn-player-abort" class="btn btn-outline-danger btn-sm" title="Przerwij i wróć do listy">
+            ✕ Przerwij quiz
+          </button>
+        </div>
+
+        <div class="player-progress-section">
+          <div class="progress-info">
+            <span class="progress-label" id="player-step-label">Pytanie 1 z 3</span>
+            <span class="progress-percent" id="player-percent-label">33%</span>
+          </div>
+          <div class="progress-track">
+            <div id="player-progress-bar" class="progress-fill" style="width: 33%;"></div>
+          </div>
+        </div>
+
+        <div class="player-question-card">
+          <div class="question-number-pill" id="player-question-pill">Pytanie 1</div>
+          <h3 id="player-question-text" class="player-question-text">
+            Treść pytania pojawi się tutaj...
+          </h3>
+
+          <p class="player-instruction-hint">Wybierz jedną z trzech poniższych odpowiedzi:</p>
+
+          <div class="player-answers-grid">
+            <button class="answer-option-btn" data-index="0" id="btn-answer-0">
+              <span class="option-letter">A</span>
+              <span class="option-text" id="answer-text-0">Odpowiedź 1</span>
+            </button>
+            <button class="answer-option-btn" data-index="1" id="btn-answer-1">
+              <span class="option-letter">B</span>
+              <span class="option-text" id="answer-text-1">Odpowiedź 2</span>
+            </button>
+            <button class="answer-option-btn" data-index="2" id="btn-answer-2">
+              <span class="option-letter">C</span>
+              <span class="option-text" id="answer-text-2">Odpowiedź 3</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIDOK 4: EKRAN PODSUMOWANIA WYNIKU -->
+      <section id="view-quiz-results" class="view hidden">
+        <div class="results-card">
+          <div class="results-header-icon" id="results-icon">
+            🏆
+          </div>
+
+          <span class="results-badge" id="results-quiz-name">Quiz wiedzy ogólnej</span>
+          <h1 class="results-title" id="results-score-display">Wynik: 2/3</h1>
+          <p class="results-subtitle" id="results-message">Bardzo dobry wynik! Świetna robota.</p>
+
+          <!-- Karty statystyk (poprawne i błędne) -->
+          <div class="stats-summary-grid">
+            <div class="stat-box stat-correct">
+              <div class="stat-icon">✓</div>
+              <div class="stat-value" id="res-correct-count">2</div>
+              <div class="stat-label">Poprawne odpowiedzi</div>
+            </div>
+            <div class="stat-box stat-incorrect">
+              <div class="stat-icon">✗</div>
+              <div class="stat-value" id="res-incorrect-count">1</div>
+              <div class="stat-label">Błędne odpowiedzi</div>
+            </div>
+            <div class="stat-box stat-total">
+              <div class="stat-icon">Σ</div>
+              <div class="stat-value" id="res-total-count">3</div>
+              <div class="stat-label">Wszystkie pytania</div>
+            </div>
+          </div>
+
+          <!-- Przegląd pytań i udzielonych odpowiedzi -->
+          <div class="results-breakdown-section">
+            <h3 class="breakdown-title">Podsumowanie pytań i odpowiedzi:</h3>
+            <div id="results-breakdown-list" class="breakdown-list">
+              <!-- Renderowane dynamicznie -->
+            </div>
+          </div>
+
+          <!-- Przyciski akcji na ekranie wyników -->
+          <div class="results-actions">
+            <button id="btn-restart-quiz" class="btn btn-primary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              <span>Spróbuj ponownie</span>
+            </button>
+            <button id="btn-back-to-quizzes" class="btn btn-secondary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Wróć do quizów</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MODAL: INSTRUKCJA -->
+    <div id="modal-instruction" class="modal-backdrop hidden">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-header-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            <h2>Instrukcja obsługi aplikacji</h2>
+          </div>
+          <button class="btn-close-modal" id="btn-close-instruction" title="Zamknij">✕</button>
+        </div>
+        <div class="modal-body instruction-content">
+          <div class="instruction-step">
+            <div class="step-num">1</div>
+            <div class="step-details">
+              <h3>Jak tworzyć quiz</h3>
+              <p>Aby utworzyć nowy quiz, kliknij przycisk <strong>„+ Nowy quiz”</strong> w prawym górnym rogu ekranu. Wpisz nazwę quizu (np. <em>„Quiz z angielskiego — unit 3”</em>) i zatwierdź. Zostaniesz automatycznie przeniesiony do edytora, w którym możesz ustalić listę pytań.</p>
+            </div>
+          </div>
+
+          <div class="instruction-step">
+            <div class="step-num">2</div>
+            <div class="step-details">
+              <h3>Jak dodawać i edytować pytania</h3>
+              <p>W edytorze quizu kliknij przycisk <strong>„+ Dodaj pytanie”</strong>. Otworzy się formularz, w którym wprowadzasz:</p>
+              <ul>
+                <li><strong>Treść pytania</strong> (np. <em>„Jaka jest stolica Polski?”</em>),</li>
+                <li><strong>Trzy możliwe odpowiedzi</strong> (A, B oraz C),</li>
+                <li><strong>Oznaczenie poprawnej odpowiedzi</strong> – zaznacz kropką, która z 3 odpowiedzi jest właściwa.</li>
+              </ul>
+              <p>Każde pytanie możesz w dowolnym momencie zedytować lub usunąć za pomocą przycisków przy pytaniu na liście.</p>
+            </div>
+          </div>
+
+          <div class="instruction-step">
+            <div class="step-num">3</div>
+            <div class="step-details">
+              <h3>Jak rozwiązywać quiz</h3>
+              <p>Na ekranie głównym znajdź interesujący Cię quiz i kliknij przycisk <strong>„Rozpocznij”</strong>:</p>
+              <ul>
+                <li>Aplikacja wyświetla pytania pojedynczo w kolejności.</li>
+                <li>W górnej części ekranu zawsze widzisz, na którym pytaniu się znajdujesz (np. <strong>„Pytanie 2 z 3”</strong>) oraz pasek postępu.</li>
+                <li>Wybierz jedną z trzech odpowiedzi, klikając w nią – aplikacja automatycznie zarejestruje Twój wybór i przejdzie do kolejnego pytania.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="instruction-step">
+            <div class="step-num">4</div>
+            <div class="step-details">
+              <h3>Jak obliczany jest wynik</h3>
+              <p>Po udzieleniu odpowiedzi na ostatnie pytanie aplikacja natychmiast wyświetla <strong>ekran podsumowania</strong>:</p>
+              <ul>
+                <li><strong>Wynik główny</strong>: stosunek poprawnych odpowiedzi do liczby wszystkich pytań (np. <strong>„Wynik: 2/3”</strong>) wraz z wynikiem procentowym.</li>
+                <li><strong>Liczba poprawnych odpowiedzi</strong> (wyróżniona kolorem zielonym).</li>
+                <li><strong>Liczba błędnych odpowiedzi</strong> (wyróżniona kolorem czerwonym).</li>
+                <li><strong>Szczegółowa lista odpowiedzi</strong> – możesz sprawdzić, które pytania rozwiązano bezbłędnie, a przy których popełniono błąd.</li>
+                <li>Możesz od razu kliknąć <strong>„Spróbuj ponownie”</strong>, aby zacząć ten sam quiz od początku, lub <strong>„Wróć do quizów”</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="instruction-note">
+            <strong>💾 Trwały zapis danych:</strong> Wszystkie quizy, pytania i zmiany zapisywane są bezpośrednio na Twoim komputerze. Po ponownym uruchomieniu aplikacji żadne dane nie znikną!
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="btn-ack-instruction">Rozumiem, zamknij</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: FORMULARZ PYTANIA (DODAWANIE / EDYCJA) -->
+    <div id="modal-question-form" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2 id="modal-question-title">Dodaj pytanie</h2>
+          <button class="btn-close-modal" id="btn-close-question-modal" title="Zamknij">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="input-question-text" class="form-label">Treść pytania: <span class="required">*</span></label>
+            <textarea id="input-question-text" class="form-control" rows="3" placeholder="Wpisz tutaj treść pytania..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Trzy możliwe odpowiedzi (zaznacz jedną poprawną): <span class="required">*</span></label>
+
+            <!-- Odpowiedź A -->
+            <div class="answer-edit-row">
+              <label class="radio-container" title="Zaznacz jako poprawną odpowiedź">
+                <input type="radio" name="correct-answer-radio" value="0" checked>
+                <span class="radio-custom">A</span>
+              </label>
+              <input type="text" id="input-answer-0" class="form-control answer-input" placeholder="Wpisz odpowiedź A...">
+            </div>
+
+            <!-- Odpowiedź B -->
+            <div class="answer-edit-row">
+              <label class="radio-container" title="Zaznacz jako poprawną odpowiedź">
+                <input type="radio" name="correct-answer-radio" value="1">
+                <span class="radio-custom">B</span>
+              </label>
+              <input type="text" id="input-answer-1" class="form-control answer-input" placeholder="Wpisz odpowiedź B...">
+            </div>
+
+            <!-- Odpowiedź C -->
+            <div class="answer-edit-row">
+              <label class="radio-container" title="Zaznacz jako poprawną odpowiedź">
+                <input type="radio" name="correct-answer-radio" value="2">
+                <span class="radio-custom">C</span>
+              </label>
+              <input type="text" id="input-answer-2" class="form-control answer-input" placeholder="Wpisz odpowiedź C...">
+            </div>
+          </div>
+
+          <div id="question-form-error" class="form-error-box hidden"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-question">Anuluj</button>
+          <button class="btn btn-primary" id="btn-save-question">Zapisz pytanie</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: TWORZENIE NOWEGO QUIZU -->
+    <div id="modal-new-quiz" class="modal-backdrop hidden">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h2>Utwórz nowy quiz</h2>
+          <button class="btn-close-modal" id="btn-close-new-quiz-modal" title="Zamknij">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="input-new-quiz-title" class="form-label">Nazwa nowego quizu: <span class="required">*</span></label>
+            <input type="text" id="input-new-quiz-title" class="form-control" placeholder="np. Quiz z angielskiego — unit 3" maxlength="120">
+            <span class="form-hint">Możesz zmienić tę nazwę również później w edytorze.</span>
+          </div>
+          <div id="new-quiz-error" class="form-error-box hidden"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-new-quiz">Anuluj</button>
+          <button class="btn btn-primary" id="btn-confirm-new-quiz">Przejdź do dodawania pytań →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: POTWIERDZENIE (USUWANIE / PRZERWANIE) -->
+    <div id="modal-confirm" class="modal-backdrop hidden">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <h2 id="modal-confirm-title">Potwierdzenie</h2>
+          <button class="btn-close-modal" id="btn-close-confirm-modal" title="Zamknij">✕</button>
+        </div>
+        <div class="modal-body">
+          <p id="modal-confirm-message">Czy na pewno chcesz wykonać tę operację?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-confirm-cancel">Anuluj</button>
+          <button class="btn btn-danger" id="btn-confirm-action">Potwierdź</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KONTENER POWIADOMIEŃ TOAST -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
